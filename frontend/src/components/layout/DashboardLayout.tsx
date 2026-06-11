@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiHome, FiFileText, FiCamera, FiMapPin, FiBarChart2, FiAward, FiBell, FiSettings, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiHome, FiFileText, FiCamera, FiMapPin, FiBarChart2, FiAward, FiBell, FiSettings, FiLogOut, FiMenu, FiX, FiGlobe } from 'react-icons/fi';
 
 const DashboardLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -25,10 +25,19 @@ const DashboardLayout: React.FC = () => {
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
           <div className="flex items-center justify-between md:hidden mb-6 px-2">
             <span className="font-bold text-white text-xl tracking-wide">Menu</span>
-            <button onClick={() => setSidebarOpen(false)} className="text-gray-400 hover:text-white"><FiX size={24} /></button>
+            <button onClick={() => setSidebarOpen(false)} title="Close menu" aria-label="Close menu" className="text-gray-400 hover:text-white"><FiX size={24} /></button>
           </div>
+
+          {/* Home / Landing Page Link */}
+          <Link
+            to="/"
+            className="flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-[15px] text-gray-400 hover:bg-[#334155]/50 hover:text-gray-200 mb-4 border-b border-[#334155] pb-4"
+          >
+            <FiGlobe size={20} />
+            Back to Home
+          </Link>
           
-          <nav className="space-y-1 mt-4">
+          <nav className="space-y-1">
             {sidebarLinks.map((link) => (
               <NavLink
                 key={link.label}
@@ -65,7 +74,7 @@ const DashboardLayout: React.FC = () => {
       <main className="flex-1 h-screen overflow-auto bg-[#0f172a]">
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-8 md:hidden">
-            <button onClick={() => setSidebarOpen(true)} className="p-2 bg-[#1e293b] rounded-lg text-gray-300">
+            <button onClick={() => setSidebarOpen(true)} title="Open menu" aria-label="Open menu" className="p-2 bg-[#1e293b] rounded-lg text-gray-300">
               <FiMenu size={24} />
             </button>
             <h1 className="text-xl font-bold text-white">EcoWaste</h1>

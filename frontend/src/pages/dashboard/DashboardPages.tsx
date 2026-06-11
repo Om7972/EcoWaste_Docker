@@ -74,11 +74,11 @@ export const Settings: React.FC = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm text-gray-400 mb-2">Full Name</label>
-          <input type="text" className="w-full bg-[#0f172a] border border-[#334155] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500" defaultValue="John Doe" />
+          <input type="text" title="Full Name" placeholder="Enter your name" className="w-full bg-[#0f172a] border border-[#334155] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500" defaultValue="John Doe" />
         </div>
         <div>
           <label className="block text-sm text-gray-400 mb-2">Email Address</label>
-          <input type="email" className="w-full bg-[#0f172a] border border-[#334155] rounded-xl px-4 py-3 text-gray-400 cursor-not-allowed" defaultValue="john.doe@example.com" disabled />
+          <input type="email" title="Email Address" placeholder="Enter your email" className="w-full bg-[#0f172a] border border-[#334155] rounded-xl px-4 py-3 text-gray-400 cursor-not-allowed" defaultValue="john.doe@example.com" disabled />
         </div>
       </div>
       

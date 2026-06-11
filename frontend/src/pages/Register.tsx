@@ -75,7 +75,7 @@ const Register: React.FC = () => {
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input id="register-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="input-field-solid !pl-11 !pr-11" placeholder="Min 6 characters" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><FiEye /></button>
+                <button type="button" onClick={() => setShowPassword(!showPassword)} title="Toggle password visibility" aria-label="Toggle password visibility" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">{showPassword ? <FiEyeOff /> : <FiEye />}</button>
               </div>
             </div>
             <div>

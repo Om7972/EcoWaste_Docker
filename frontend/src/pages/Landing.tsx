@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FiArrowRight, FiZap, FiMap, FiShield, FiTrendingUp, FiAward, FiBarChart2, FiCpu, FiGlobe, FiUsers, FiStar, FiCheckCircle } from 'react-icons/fi';
-import { FaRecycle, FaLeaf, FaTruck } from 'react-icons/fa';
+import { FiArrowRight, FiMap, FiShield, FiAward, FiBarChart2, FiCpu, FiGlobe, FiStar, FiCheckCircle } from 'react-icons/fi';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 50 },

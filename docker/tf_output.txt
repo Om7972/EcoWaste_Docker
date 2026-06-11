@@ -1,0 +1,242 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+
+Terraform will perform the following actions:
+
+[1m  # aws_instance.docker_server[0m will be created
+[0m  [32m+[0m[0m resource "aws_instance" "docker_server" {
+      [32m+[0m[0m ami                                  = "ami-0f5ee92e2d63afc18"
+      [32m+[0m[0m arn                                  = (known after apply)
+      [32m+[0m[0m associate_public_ip_address          = true
+      [32m+[0m[0m availability_zone                    = (known after apply)
+      [32m+[0m[0m disable_api_stop                     = (known after apply)
+      [32m+[0m[0m disable_api_termination              = (known after apply)
+      [32m+[0m[0m ebs_optimized                        = (known after apply)
+      [32m+[0m[0m enable_primary_ipv6                  = (known after apply)
+      [32m+[0m[0m force_destroy                        = false
+      [32m+[0m[0m get_password_data                    = false
+      [32m+[0m[0m host_id                              = (known after apply)
+      [32m+[0m[0m host_resource_group_arn              = (known after apply)
+      [32m+[0m[0m iam_instance_profile                 = (known after apply)
+      [32m+[0m[0m id                                   = (known after apply)
+      [32m+[0m[0m instance_initiated_shutdown_behavior = (known after apply)
+      [32m+[0m[0m instance_lifecycle                   = (known after apply)
+      [32m+[0m[0m instance_state                       = (known after apply)
+      [32m+[0m[0m instance_type                        = "t3.micro"
+      [32m+[0m[0m ipv6_address_count                   = (known after apply)
+      [32m+[0m[0m ipv6_addresses                       = (known after apply)
+      [32m+[0m[0m key_name                             = (known after apply)
+      [32m+[0m[0m monitoring                           = (known after apply)
+      [32m+[0m[0m outpost_arn                          = (known after apply)
+      [32m+[0m[0m password_data                        = (known after apply)
+      [32m+[0m[0m placement_group                      = (known after apply)
+      [32m+[0m[0m placement_group_id                   = (known after apply)
+      [32m+[0m[0m placement_partition_number           = (known after apply)
+      [32m+[0m[0m primary_network_interface_id         = (known after apply)
+      [32m+[0m[0m private_dns                          = (known after apply)
+      [32m+[0m[0m private_ip                           = (known after apply)
+      [32m+[0m[0m public_dns                           = (known after apply)
+      [32m+[0m[0m public_ip                            = (known after apply)
+      [32m+[0m[0m region                               = "ap-south-1"
+      [32m+[0m[0m secondary_private_ips                = (known after apply)
+      [32m+[0m[0m security_groups                      = (known after apply)
+      [32m+[0m[0m source_dest_check                    = true
+      [32m+[0m[0m spot_instance_request_id             = (known after apply)
+      [32m+[0m[0m subnet_id                            = (known after apply)
+      [32m+[0m[0m tags                                 = {
+          [32m+[0m[0m "Name" = "Docker-Server"
+        }
+      [32m+[0m[0m tags_all                             = {
+          [32m+[0m[0m "Name" = "Docker-Server"
+        }
+      [32m+[0m[0m tenancy                              = (known after apply)
+      [32m+[0m[0m user_data                            = <<-EOT
+            #!/bin/bash
+            
+            apt update -y
+            apt install docker.io docker-compose -y
+            
+            systemctl start docker
+            systemctl enable docker
+            
+            cat << 'EOT' > /home/ubuntu/docker-compose.yml
+            version: '3.8'
+            services:
+              mongodb:
+                image: mongo:7-alpine
+                container_name: ecowaste-mongodb
+                restart: unless-stopped
+                ports:
+                  - "27017:27017"
+                volumes:
+                  - mongo_data:/data/db
+                environment:
+                  MONGO_INITDB_DATABASE: ecowaste
+                networks:
+                  - ecowaste-network
+            
+              backend:
+                image: om7972/myapp-backend:latest
+                container_name: ecowaste-backend
+                restart: unless-stopped
+                ports:
+                  - "5000:5000"
+                environment:
+                  - NODE_ENV=production
+                  - PORT=5000
+                  - MONGO_URI=mongodb://mongodb:27017/ecowaste
+                  - JWT_SECRET=ecowaste_super_secret_key_2024
+                  - JWT_EXPIRE=30d
+                  - CLIENT_URL=*
+                volumes:
+                  - backend_uploads:/app/uploads
+                depends_on:
+                  - mongodb
+                networks:
+                  - ecowaste-network
+            
+              frontend:
+                image: om7972/myapp-frontend:latest
+                container_name: ecowaste-frontend
+                restart: unless-stopped
+                ports:
+                  - "80:3000"
+                environment:
+                  - VITE_API_URL=http://localhost:5000/api
+                depends_on:
+                  - backend
+                networks:
+                  - ecowaste-network
+            
+            volumes:
+              mongo_data:
+                name: ecowaste_mongo_data
+              backend_uploads:
+                name: ecowaste_backend_uploads
+            
+            networks:
+              ecowaste-network:
+                driver: bridge
+                name: ecowaste_bridge
+            EOT
+            
+            cd /home/ubuntu
+            docker-compose up -d
+        EOT
+      [32m+[0m[0m user_data_base64                     = (known after apply)
+      [32m+[0m[0m user_data_replace_on_change          = false
+      [32m+[0m[0m vpc_security_group_ids               = (known after apply)
+
+      [32m+[0m[0m capacity_reservation_specification (known after apply)
+
+      [32m+[0m[0m cpu_options (known after apply)
+
+      [32m+[0m[0m ebs_block_device (known after apply)
+
+      [32m+[0m[0m enclave_options (known after apply)
+
+      [32m+[0m[0m ephemeral_block_device (known after apply)
+
+      [32m+[0m[0m instance_market_options (known after apply)
+
+      [32m+[0m[0m maintenance_options (known after apply)
+
+      [32m+[0m[0m metadata_options (known after apply)
+
+      [32m+[0m[0m network_interface (known after apply)
+
+      [32m+[0m[0m primary_network_interface (known after apply)
+
+      [32m+[0m[0m private_dns_name_options (known after apply)
+
+      [32m+[0m[0m root_block_device (known after apply)
+
+      [32m+[0m[0m secondary_network_interface (known after apply)
+    }
+
+[1m  # aws_security_group.allow_web[0m will be created
+[0m  [32m+[0m[0m resource "aws_security_group" "allow_web" {
+      [32m+[0m[0m arn                    = (known after apply)
+      [32m+[0m[0m description            = "Allow HTTP and SSH"
+      [32m+[0m[0m egress                 = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m from_port        = 0
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "-1"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 0
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m id                     = (known after apply)
+      [32m+[0m[0m ingress                = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m description      = "Backend API"
+              [32m+[0m[0m from_port        = 5000
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 5000
+            },
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m description      = "HTTP"
+              [32m+[0m[0m from_port        = 80
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 80
+            },
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m description      = "SSH"
+              [32m+[0m[0m from_port        = 22
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 22
+            },
+        ]
+      [32m+[0m[0m name                   = "allow_web_ecowaste"
+      [32m+[0m[0m name_prefix            = (known after apply)
+      [32m+[0m[0m owner_id               = (known after apply)
+      [32m+[0m[0m region                 = "ap-south-1"
+      [32m+[0m[0m revoke_rules_on_delete = false
+      [32m+[0m[0m tags_all               = (known after apply)
+      [32m+[0m[0m vpc_id                 = (known after apply)
+    }
+
+[1mPlan:[0m [0m2 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  [32m+[0m[0m instance_id = (known after apply)
+  [32m+[0m[0m public_ip   = (known after apply)
+[0m[1maws_security_group.allow_web: Creating...[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mcreating Security Group (allow_web_ecowaste): operation error EC2: CreateSecurityGroup, https response error StatusCode: 403, RequestID: fc3e5c90-7ed9-4a9e-96c8-c75716361f33, api error UnauthorizedOperation: You are not authorized to perform this operation. User: arn:aws:iam::575228958918:user/docker-nodejs is not authorized to perform: ec2:CreateSecurityGroup on resource: arn:aws:ec2:ap-south-1:575228958918:security-group/* because no identity-based policy allows the ec2:CreateSecurityGroup action. Encoded authorization failure message: EC-nqEV5tgLltTj1UZYB9y0n_OBXD7WADPYSZIEswxggMeTLpOkk1Gb4H_t0jRj2XgarzlGnDSiHwLH4zat-FBndaijPtcLKKC8X61MnOUDs6iwlUmgRWBIrVI1FFOQozimm7OAXVbdZdLnakwZNjhguGJ09f0KbkE9DgX1_J6wmZSC02N0NuVIym3KxfI1_uSrHhFCpPeYL_CijPTXWDTY3eAnVazsgLf2nsIx5dqxOooddkkIrEjFw-bkjJ1X8T0AwRjrnZJODWEQm6fsyxMrJgdbQ5Io6vzolsGI1j1Pe2UbcVQ46qodRVuwhSHpRk8CW5Yeaydr5XqxKUtGv96JblFfTV-_h84tIPzcTs4Fqhs9yuA0OhHhfwIOZg75AWy9xs22TDtsnOksEwy_LdUMd0tED8-CipAKaddb7QeBSweVftpsXOsGxI5lV2vol-1cz2OWvFbVxfq-wMaWLN31fJLdPMT_5N8O_D5MwWRhN8abNIQE4-w7ap8Q1mGFGyDgjxSGVmt53buh_s1HvAFdlRToQky5LNKaElpoyt5g[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  with aws_security_group.allow_web,
+[31m│[0m [0m  on main.tf line 5, in resource "aws_security_group" "allow_web":
+[31m│[0m [0m   5: resource "aws_security_group" "allow_web" [4m{[0m[0m
+[31m│[0m [0m
+[31m╵[0m[0m

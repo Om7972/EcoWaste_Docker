@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
         <div className="flex flex-col h-full p-4">
           <div className="flex items-center justify-between md:hidden mb-4">
             <span className="font-bold text-gray-900 dark:text-white">Menu</span>
-            <button onClick={() => setSidebarOpen(false)}><FiX size={20} /></button>
+            <button onClick={() => setSidebarOpen(false)} title="Close menu" aria-label="Close menu"><FiX size={20} /></button>
           </div>
           {/* User Card */}
           <div className="p-4 bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 rounded-2xl mb-6">
@@ -115,7 +115,7 @@ const Dashboard: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <button onClick={() => setSidebarOpen(true)} className="md:hidden p-2 -ml-2 mb-2"><FiMenu size={24} /></button>
+            <button onClick={() => setSidebarOpen(true)} title="Open menu" aria-label="Open menu" className="md:hidden p-2 -ml-2 mb-2"><FiMenu size={24} /></button>
             <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900 dark:text-white">
               {isAdmin ? 'Admin Dashboard' : 'Dashboard'}
             </h1>
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-2 gap-2 mt-4">
               {pieData.map((item) => (
                 <div key={item.name} className="flex items-center gap-2 text-sm">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                  <div className="w-3 h-3 rounded-full color-dot" data-color={item.color} style={{ ['--dot-color' as string]: item.color }} aria-hidden="true" />
                   <span className="text-gray-600 dark:text-gray-400">{item.name}</span>
                 </div>
               ))}

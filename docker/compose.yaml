@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  web:
+    image: dhruv0209/myapp:latest
+    build: .
+    ports:
+      - "80:80"

@@ -35,6 +35,8 @@ const AppRoutes: React.FC = () => (
       <Route path="/" element={<Landing />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/recycling-centers" element={<RecyclingCenters />} />
+      <Route path="/analytics" element={<Analytics />} />
     </Route>
     
     <Route path="/login" element={<Login />} />

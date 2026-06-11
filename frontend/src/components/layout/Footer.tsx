@@ -22,10 +22,16 @@ const Footer: React.FC = () => {
               AI-powered smart waste management platform making cities cleaner and greener through technology and community participation.
             </p>
             <div className="flex gap-3">
-              {[FaTwitter, FaGithub, FaLinkedin].map((Icon, i) => (
+              {[
+                { Icon: FaTwitter, label: 'Twitter' },
+                { Icon: FaGithub, label: 'GitHub' },
+                { Icon: FaLinkedin, label: 'LinkedIn' },
+              ].map(({ Icon, label }, i) => (
                 <a
                   key={i}
                   href="#"
+                  title={label}
+                  aria-label={label}
                   className="w-10 h-10 bg-gray-800 hover:bg-primary-500/20 rounded-xl flex items-center justify-center text-gray-400 hover:text-primary-400 transition-all duration-200"
                 >
                   <Icon size={18} />

@@ -69,7 +69,7 @@ const WasteScanner: React.FC = () => {
             ) : (
               <div className="relative">
                 <img src={image} alt="Waste" className="w-full h-64 object-cover rounded-2xl" />
-                <button onClick={reset} className="absolute top-3 right-3 p-2 bg-white/80 dark:bg-dark-card/80 backdrop-blur-md rounded-xl hover:bg-white transition-colors">
+                <button onClick={reset} title="Re-upload image" aria-label="Re-upload image" className="absolute top-3 right-3 p-2 bg-white/80 dark:bg-dark-card/80 backdrop-blur-md rounded-xl hover:bg-white transition-colors">
                   <FiRefreshCw size={18} />
                 </button>
               </div>

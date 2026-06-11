@@ -15,9 +15,7 @@ services:
       - ecowaste-network
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: om7972/myapp-backend:latest
     container_name: ecowaste-backend
     restart: unless-stopped
     ports:
@@ -37,9 +35,7 @@ services:
       - ecowaste-network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: om7972/myapp-frontend:latest
     container_name: ecowaste-frontend
     restart: unless-stopped
     ports:
