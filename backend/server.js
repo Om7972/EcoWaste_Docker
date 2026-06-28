@@ -46,6 +46,7 @@ app.use('/api/rewards', require('./routes/rewardRoutes'));
 app.use('/api/routes', require('./routes/routeRoutes'));
 app.use('/api/smart-bins', require('./routes/smartBinRoutes'));
 app.use('/api/sustainability', require('./routes/sustainabilityRoutes'));
+app.use('/api/saas', require('./routes/saasRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

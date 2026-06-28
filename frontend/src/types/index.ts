@@ -392,4 +392,95 @@ export interface CommunityEventData {
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 }
 
+export interface Organization {
+  _id: string;
+  name: string;
+  city: string;
+  domain: string;
+  status: 'active' | 'suspended' | 'trial';
+  subscription: {
+    plan: 'basic' | 'growth' | 'enterprise';
+    status: 'active' | 'past_due' | 'cancelled';
+    startDate: string;
+    endDate?: string;
+    usageLimits: {
+      maxBins: number;
+      maxVehicles: number;
+      maxUsers: number;
+    };
+  };
+  settings: {
+    slaTargetResolutionHours: number;
+    autoAssignDrivers: boolean;
+    alertThresholdFillPercentage: number;
+  };
+}
+
+export interface Vehicle {
+  _id: string;
+  plateNumber: string;
+  model: string;
+  capacity: number;
+  status: 'active' | 'maintenance' | 'inactive';
+  fuelType: 'diesel' | 'cng' | 'electric' | 'petrol';
+  currentFuelLevel: number;
+  fuelEfficiency: number;
+  odometer: number;
+}
+
+export interface Driver {
+  _id: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    phone: string;
+    role: string;
+  };
+  licenseNumber: string;
+  status: 'available' | 'on_duty' | 'off_duty';
+  assignedVehicle?: Vehicle;
+  rating: number;
+  completedCollections: number;
+}
+
+export interface ExpenseData {
+  _id: string;
+  category: 'fuel' | 'maintenance' | 'salary' | 'equipment' | 'other';
+  amount: number;
+  description: string;
+  date: string;
+  vehicle?: Vehicle;
+  loggedBy: {
+    _id: string;
+    name: string;
+  };
+}
+
+export interface KPIMetricData {
+  _id: string;
+  ward: string;
+  date: string;
+  wasteCollectedKg: number;
+  fuelConsumedLiters: number;
+  costPerTon: number;
+  resolvedComplaintsCount: number;
+  totalComplaintsCount: number;
+  averageResolutionTimeHours: number;
+  collectionEfficiencyPercentage: number;
+  predictedWasteKg: number;
+}
+
+export interface AuditLogData {
+  _id: string;
+  user?: {
+    name: string;
+  };
+  action: string;
+  details: string;
+  ipAddress?: string;
+  timestamp: string;
+}
+
+
 

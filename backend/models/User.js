@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   rewardPoints: { type: Number, default: 0 },
   address: { type: String, default: '' },
   phone: { type: String, default: '' },
+  organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization' },
 }, { timestamps: true });
 
 userSchema.pre('save', async function() {

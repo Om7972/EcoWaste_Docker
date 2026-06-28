@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiHome, FiFileText, FiCamera, FiMapPin, FiBarChart2, FiAward, FiBell, FiSettings, FiLogOut, FiMenu, FiX, FiGlobe, FiCpu, FiCompass } from 'react-icons/fi';
+import { FiHome, FiFileText, FiCamera, FiMapPin, FiBarChart2, FiAward, FiBell, FiSettings, FiLogOut, FiMenu, FiX, FiGlobe, FiCpu, FiCompass, FiSliders } from 'react-icons/fi';
 
 const DashboardLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -11,6 +11,7 @@ const DashboardLayout: React.FC = () => {
     { icon: FiHome, label: 'Overview', path: '/dashboard', exact: true },
     { icon: FiCpu, label: 'Smart Bins', path: '/dashboard/smart-bins' },
     { icon: FiCompass, label: 'Ecosystem', path: '/dashboard/sustainability' },
+    { icon: FiSliders, label: 'SaaS Ops', path: '/dashboard/operations' },
     { icon: FiFileText, label: 'Complaints', path: '/dashboard/complaints' },
     { icon: FiCamera, label: 'AI Scanner', path: '/dashboard/scanner' },
     { icon: FiMapPin, label: 'Map', path: '/dashboard/map' },
