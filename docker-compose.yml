@@ -4,20 +4,28 @@ services:
   mongodb:
     image: mongo:7-alpine
     container_name: ecowaste-mongodb
-    restart: unless-stopped
+    restart: always
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: ecowaste
+    healthcheck:
+      test: ["CMD", "mongod", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - ecowaste-network
 
   backend:
-    image: om7972/myapp-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: ecowaste-backend
-    restart: unless-stopped
+    restart: always
     ports:
       - "5000:5000"
     environment:
@@ -30,20 +38,34 @@ services:
     volumes:
       - backend_uploads:/app/uploads
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5000/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - ecowaste-network
 
   frontend:
-    image: om7972/myapp-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: ecowaste-frontend
-    restart: unless-stopped
+    restart: always
     ports:
-      - "3000:3000"
-    environment:
-      - VITE_API_URL=http://localhost:5000/api
+      - "80:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - ecowaste-network
 

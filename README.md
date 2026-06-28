@@ -1,311 +1,214 @@
-# 🌿 EcoWaste - AI-Powered Smart Waste Management Platform
+# 🌿 EcoWaste - Multi-Tenant AI-Powered Smart City Sustainability & Waste Platform
 
-A full-stack, production-ready smart waste management platform built with React, Node.js, MongoDB, and Docker. Uses AI-powered waste classification, route optimization, and community-driven recycling programs.
+EcoWaste is an enterprise-grade, multi-tenant SaaS platform designed for modern municipalities to orchestrate smart waste collection, automate driver routes, audit operational expenses, and engage citizens with gamified recycling rewards and carbon analytics.
 
-![License](https://img.shields.io/badge/license-MIT-green)
-![Docker](https://img.shields.io/badge/docker-ready-blue)
-![Node](https://img.shields.io/badge/node-20+-brightgreen)
-![React](https://img.shields.io/badge/react-18+-61DAFB)
+[![License](https://img.shields.io/badge/license-MIT-green)](#)
+[![Docker](https://img.shields.io/badge/docker-ready-blue)](#)
+[![Node](https://img.shields.io/badge/node-20+-brightgreen)](#)
+[![React](https://img.shields.io/badge/react-18+-61DAFB)](#)
 
 ---
 
 ## 📋 Table of Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Docker Deployment](#docker-deployment)
-- [API Documentation](#api-documentation)
-- [Demo Credentials](#demo-credentials)
+1. [System Architecture](#-system-architecture)
+2. [Tech Stack](#-tech-stack)
+3. [Features](#-features)
+4. [Folder Structure](#-folder-structure)
+5. [Getting Started & Local Development](#-getting-started--local-development)
+6. [Production Docker Compose Deployment](#-production-docker-compose-deployment)
+7. [Docker Hub Release Guides](#-docker-hub-release-guides)
+8. [Environment Variables](#-environment-variables)
+9. [API Endpoint Directory](#-api-endpoint-directory)
+10. [Troubleshooting Guide](#-troubleshooting-guide)
+11. [College Viva Deployment Checklist](#-college-viva-deployment-checklist)
 
 ---
 
-## ✨ Features
+## 🏗️ System Architecture
 
-| Feature | Description |
-|---------|-------------|
-| 🤖 AI Waste Classification | Upload images for instant waste category prediction |
-| 📊 Analytics Dashboard | Interactive charts showing waste management metrics |
-| 🗺️ Recycling Center Locator | Find nearby centers on an interactive map |
-| 📝 Complaint Tracking | Report and track garbage issues in real-time |
-| 🏆 Reward Points | Earn points for recycling participation |
-| 🚛 Route Optimization | AI-driven route planning for collection trucks |
-| 🔔 Real-time Notifications | Stay updated on complaint status changes |
-| 🌓 Dark/Light Mode | Toggle between themes |
-| 👥 Role-based Access | Citizen, Admin, and Collector roles |
-| 📱 Responsive Design | Mobile-first, works on all devices |
+```mermaid
+graph TD
+    subgraph Client Layer
+        C[Citizen Mobile/Web Portal] --> |Scan QR / Recyclables Marketplace| N
+        M[Municipality Admin Panel] --> |SaaS Fleet / Expenses / SLA Control| N
+        D[Driver App Route Maps] --> |Assigned Bins / Telemetry| N
+    end
+
+    subgraph Reverse Proxy / Gateway
+        N[Nginx Reverse Proxy - Port 80] -->|Serve Static Frontend| F[React SPA - Client]
+        N -->|Proxy API Requests /api| B[Node Express Backend - Port 5000]
+    end
+
+    subgraph Service Layer
+        B --> |Telemetry Processing| IS[IoT telemetry Simulator]
+        B --> |Auto driver-assign & Route Optimizer| RO[Route Engine]
+        B --> |Carbon offset calculations| CC[Carbon Calculator]
+    end
+
+    subgraph Storage Layer
+        B --> |Query isolated tenant data| DB[(MongoDB - Port 27017)]
+    end
+```
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **React 18** + **TypeScript** - UI framework
-- **Tailwind CSS 3** - Utility-first styling
-- **Framer Motion** - Animations & transitions
-- **Recharts** - Data visualization
-- **React Router v6** - Client-side routing
-- **Axios** - HTTP client
-- **React Leaflet** - Maps integration
-
-### Backend
-- **Node.js** + **Express.js** - REST API
-- **MongoDB** + **Mongoose** - Database
-- **JWT** - Authentication
-- **Multer** - File uploads
-- **Helmet** + **CORS** - Security
-- **Morgan** - HTTP logging
-
-### DevOps
-- **Docker** + **Docker Compose** - Containerization
-- **Nginx** - Reverse proxy & static serving
-- **Multi-stage builds** - Optimized images
+* **Frontend**: React 18, TypeScript, Recharts (Data analytics), React Leaflet (Interactive mapping), Tailwind CSS, Framer Motion (Premium animations).
+* **Backend**: Node.js, Express.js REST API, Socket.IO (Real-time telemetry and alerts), Multer (Image reporting).
+* **Database**: MongoDB (7.0 Alpine) with Mongoose ORM, GeoJSON spatial indexes.
+* **DevOps**: Docker, Docker Compose, Nginx Gateway, multi-stage builder patterns.
 
 ---
 
-## 📁 Project Structure
+## ✨ Features
+
+* **Multi-Tenant SaaS Workspace**: Tenant isolation by organization ID, municipality configuration dashboard, custom subdomains, usage and limit tracking metrics.
+* **Smart Bin IoT & Routing**: Live animated telemetry gauges, predictive linear regression overflow estimates, and optimized GPS collection route generation.
+* **Citizen Sustainability Ecosystem**:
+  * **Rewards & Badges**: QR check-ins, achievements progress, daily/weekly challenges.
+  * **Carbon reports**: Calculated CO₂ offsets, aggregated community impact scores, and AI recommendations.
+  * **Waste Trading**: Local P2P recyclables bids, scheduled pickup approvals, and moderator controls.
+* **Municipality Fleet & Expenses**: Real-time vehicle telemetry, driver ratings, fuel efficiency charts, expense categories logs, and automatic SLA complaint escalations.
+
+---
+
+## 📁 Folder Structure
 
 ```
 Assignment_7/
-├── frontend/                # React TypeScript app
+├── frontend/                # React TypeScript client
 │   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   │   └── layout/      # Navbar, Footer, Layout
-│   │   ├── context/         # Auth & Theme contexts
-│   │   ├── pages/           # Route pages
-│   │   ├── services/        # API service layer
-│   │   ├── types/           # TypeScript definitions
-│   │   ├── App.tsx          # Root component
-│   │   └── main.tsx         # Entry point
-│   ├── Dockerfile           # Multi-stage frontend build
-│   ├── nginx.conf           # Nginx configuration
-│   └── .dockerignore
-├── backend/                 # Express.js API
-│   ├── config/              # Database configuration
-│   ├── controllers/         # Route handlers (MVC)
-│   ├── middleware/          # Auth, upload middleware
-│   ├── models/              # Mongoose schemas
-│   ├── routes/              # API route definitions
-│   ├── utils/               # Seed script, helpers
-│   ├── uploads/             # File upload storage
-│   ├── server.js            # Express app entry
-│   ├── Dockerfile           # Multi-stage backend build
-│   └── .dockerignore
-├── docker-compose.yml       # Full stack orchestration
+│   │   ├── components/      # Glassmorphic layout & reusable components
+│   │   ├── pages/           # Pages (Smart Bin Dash, Sustainability, SaaS Ops)
+│   │   ├── services/        # API services (sustainabilityApi, saasApi)
+│   │   ├── types/           # TypeScript model definitions
+│   ├── Dockerfile           # Optimized multi-stage client build
+│   ├── nginx.conf           # Gateway reverse proxy configuration
+├── backend/                 # Node.js API
+│   ├── controllers/         # MVC endpoint controllers
+│   ├── models/              # MongoDB Mongoose schemas
+│   ├── routes/              # Express endpoint routers
+│   ├── services/            # IoT simulator, Route Optimizer
+│   ├── Dockerfile           # Lightweight Alpine production build
+├── docker-compose.yml       # Complete stack orchestration file
 └── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started & Local Development
 
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
-- npm or yarn
-- Docker & Docker Compose (for containerized deployment)
+### Local Pre-requisites
+* Node.js 18+ & npm 9+
+* Local MongoDB instance running on `mongodb://localhost:27017/ecowaste`
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/yourusername/ecowaste.git
-cd ecowaste
-```
-
-### 2. Local Setup (Without Docker)
-
-#### Backend Setup
+### Step 1: Initialize Database
+Seed default smart bins, driver profiles, and sustainability records:
 ```bash
 cd backend
 npm install
-cp .env.example .env    # Edit with your MongoDB URI
-npm run seed            # Seed demo data
-npm run dev             # Start on port 5000
+cp .env.example .env
+npm run seed
 ```
 
-#### Frontend Setup
+### Step 2: Start Services
 ```bash
-cd frontend
+# Start backend API (runs on port 5000)
+npm run dev
+
+# Start frontend Client (runs on port 5173)
+cd ../frontend
 npm install
-cp .env.example .env
-npm run dev             # Start on port 5173
+npm run dev
 ```
 
 ---
 
-## 🐳 Docker Deployment (Production Ready)
+## 🐳 Production Docker Compose Deployment
 
-The project includes a production-ready Docker setup using multi-stage builds, Alpine images, and custom bridge networking.
+We use a Docker Compose configuration including healthchecks, persistent volumes, restart policies, and custom isolated networks.
 
-### Build & Run with Docker Compose
+### Build and Start Stack
 ```bash
 # Build and start all services in detached mode
 docker-compose up --build -d
 
-# Verify containers are running
-docker ps
+# Verify services status
+docker-compose ps
 
-# List created images
-docker images
-
-# View logs for a specific service
-docker-compose logs -f frontend
-
-# Stop all services and remove containers
-docker-compose down
+# Monitor real-time logs
+docker-compose logs -f
 ```
+* **Frontend Access**: Available on port `80` (mapped to host).
+* **Backend API**: Proxied by Nginx to Port `5000`.
+* **MongoDB**: Persisted via `mongo_data` volume.
 
-*Frontend will be available on port 3000.*
-*Backend will be available on port 5000.*
-*MongoDB will be running on port 27017 with a persistent volume.*
+---
 
-### Individual Docker Builds & Docker Hub Push
+## 🏷️ Docker Hub Release Guides
 
-If you want to build and push individual images to Docker Hub:
+Run these commands to tag and push the production images to your Docker Hub registry:
 
-#### Frontend
 ```bash
+# 1. Login to Docker Hub
+docker login
+
+# 2. Build & Push Frontend Image
 cd frontend
-# Build the optimized production image
-docker build -t ecowaste-frontend .
-# Tag for Docker Hub
-docker tag ecowaste-frontend yourusername/ecowaste-frontend:latest
-# Push to Docker Hub
-docker push yourusername/ecowaste-frontend:latest
-```
+docker build -t <dockerhub-username>/smartwaste-frontend:latest .
+docker push <dockerhub-username>/smartwaste-frontend:latest
 
-#### Backend
-```bash
-cd backend
-# Build the optimized production image
-docker build -t ecowaste-backend .
-# Tag for Docker Hub
-docker tag ecowaste-backend yourusername/ecowaste-backend:latest
-# Push to Docker Hub
-docker push yourusername/ecowaste-backend:latest
+# 3. Build & Push Backend Image
+cd ../backend
+docker build -t <dockerhub-username>/smartwaste-backend:latest .
+docker push <dockerhub-username>/smartwaste-backend:latest
 ```
 
 ---
 
-## ⚙️ CI/CD Workflow (GitHub Actions)
+## ⚙️ Environment Variables
 
-This project includes a complete CI/CD pipeline using GitHub Actions to automatically build and push Docker images to Docker Hub whenever code is pushed to the `main` branch.
+### Backend (`backend/.env`)
+* `PORT`: Server port (Default: `5000`)
+* `MONGO_URI`: MongoDB connection string (`mongodb://localhost:27017/ecowaste`)
+* `JWT_SECRET`: Security salt for tokens
+* `JWT_EXPIRE`: Token duration (Default: `30d`)
 
-### How to Configure the Workflow
-
-1. **Create a Docker Hub Repository**:
-   - Go to [Docker Hub](https://hub.docker.com/) and create an account.
-   - You don't need to manually create repositories, the push command will create them automatically as `smartwaste-frontend` and `smartwaste-backend`.
-
-2. **Add GitHub Secrets**:
-   - Go to your GitHub repository -> **Settings** -> **Secrets and variables** -> **Actions**.
-   - Click **New repository secret**.
-   - Add the following secrets:
-     - `DOCKERHUB_USERNAME`: Your Docker Hub username.
-     - `DOCKERHUB_TOKEN`: An Access Token generated from Docker Hub (Account Settings -> Security -> New Access Token). *Do not use your account password.*
-
-3. **Trigger the Workflow**:
-   - The workflow is defined in `.github/workflows/docker-deploy.yml`.
-   - It will automatically trigger when you push to the `main` branch.
-   - You can also trigger it manually from the **Actions** tab in GitHub.
-
-### Pulling and Running from Docker Hub
-
-Once the CI/CD pipeline has published the images, anyone can run your application without needing to build it from source!
-
-```bash
-# Pull the latest frontend image
-docker pull yourusername/smartwaste-frontend:latest
-
-# Pull the latest backend image
-docker pull yourusername/smartwaste-backend:latest
-
-# Run the frontend (maps container port 3000 to host port 3000)
-docker run -d -p 3000:3000 --name ecowaste-frontend yourusername/smartwaste-frontend:latest
-
-# Run the backend (maps container port 5000 to host port 5000)
-docker run -d -p 5000:5000 --name ecowaste-backend yourusername/smartwaste-backend:latest
-```
+### Frontend (`frontend/.env`)
+* `VITE_API_URL`: Root path for API requests (Default: `/api`)
 
 ---
 
-## 📡 API Documentation
+## 📡 API Endpoint Directory
 
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login user |
-| GET | `/api/auth/profile` | Get current user profile |
-| PUT | `/api/auth/profile` | Update profile |
+### Multi-Tenant SaaS Operations (`/api/saas`)
+* `POST /tenant/register`: Register new municipality organization.
+* `GET /tenant/info`: Get settings for authenticated tenant workspace.
+* `POST /fleet/vehicles` / `GET /fleet/vehicles`: Add or list fleet vehicles.
+* `POST /fleet/drivers` / `GET /fleet/drivers`: Add or view driver telemetry.
+* `POST /expenses` / `GET /expenses`: Log or list operational costs.
+* `GET /analytics/kpis`: View ward-wise KPI charts and volume trends.
+* `GET /analytics/ai-forecast`: Get waste generation predictions and seasonal trend factors.
+* `POST /automation/trigger`: Trigger automated driver assignment & SLA escalation rules.
 
-### Complaints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/complaints` | Get all complaints |
-| GET | `/api/complaints/my` | Get user's complaints |
-| POST | `/api/complaints` | Create complaint (with images) |
-| PUT | `/api/complaints/:id` | Update complaint |
-| DELETE | `/api/complaints/:id` | Delete (admin only) |
-
-### Waste Classification
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/waste/predict` | Upload image for AI prediction |
-| GET | `/api/waste/history` | Get prediction history |
-| GET | `/api/waste/stats` | Get waste statistics |
-
-### Recycling Centers
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/recycling-centers` | Get all centers |
-| GET | `/api/recycling-centers/nearby?lat=&lng=` | Get nearby centers |
-
-### Dashboard
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/dashboard/stats` | User stats |
-| GET | `/api/dashboard/admin-stats` | Admin stats |
-| GET | `/api/dashboard/analytics` | Analytics data |
-
-### Rewards
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/rewards/points` | Get user points |
-| GET | `/api/rewards/leaderboard` | Get leaderboard |
-| POST | `/api/rewards/redeem` | Redeem points |
+### Citizen Sustainability (`/api/sustainability`)
+* `GET /missions`: Get active daily and weekly challenges.
+* `POST /verify-qr`: Verify physical bin deposits and award reward points.
+* `GET /carbon/report`: Retrieve carbon footprint savings statistics.
+* `GET /marketplace/listings`: List P2P waste marketplace trade offers.
+* `POST /marketplace/listings/:id/bids`: Place bids on recyclable waste listings.
 
 ---
 
-## 🔐 Demo Credentials
+## 🛠️ Troubleshooting Guide
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@ecowaste.io | demo123456 |
-| Citizen | citizen@ecowaste.io | demo123456 |
-| Collector | collector@ecowaste.io | demo123456 |
-
-> Run `npm run seed` in the backend directory to create these users.
+1. **MongoDB Connection Failures**: If backend container fails to start, ensure no other service is binding port `27017` on your host. Check logs via `docker logs ecowaste-mongodb`.
+2. **Nginx 502 Bad Gateway**: Occurs when Nginx starts before the backend is healthy. The compose file handles this via the `condition: service_healthy` dependency checker.
+3. **CORS Policy Errors**: Ensure the `CLIENT_URL` in backend env matches your client domain.
 
 ---
 
-## 🎨 UI/UX Features
+## 🎓 College Viva Deployment Checklist
 
-- **Glassmorphism** design with frosted glass effects
-- **Framer Motion** page transitions and micro-animations
-- **Dark/Light mode** with system preference detection
-- **Responsive layout** optimized for all screen sizes
-- **Interactive charts** with Recharts
-- **Gradient backgrounds** and neon glow effects
-- **Custom scrollbar** styling
-- **Google Fonts** (Inter, Outfit)
-
----
-
-## 📄 License
-
-MIT License - feel free to use this project for learning and development.
-
----
-
-Built with 💚 for a cleaner planet.
+Refer to the included [VIVA_CHECKLIST.md](file:///d:/Assignment_7/VIVA_CHECKLIST.md) in the workspace for step-by-step evaluation tests and questions to nail your project presentation!
