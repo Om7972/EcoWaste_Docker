@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: [true, 'Name is required'], trim: true, maxlength: 50 },
   email: { type: String, required: [true, 'Email is required'], unique: true, lowercase: true, match: [/^\S+@\S+\.\S+$/, 'Invalid email'] },
   password: { type: String, required: [true, 'Password is required'], minlength: 6, select: false },
-  role: { type: String, enum: ['citizen', 'admin', 'collector'], default: 'citizen' },
+  role: { type: String, enum: ['citizen', 'admin', 'collector', 'driver', 'municipality'], default: 'citizen' },
   avatar: { type: String, default: '' },
   rewardPoints: { type: Number, default: 0 },
   address: { type: String, default: '' },

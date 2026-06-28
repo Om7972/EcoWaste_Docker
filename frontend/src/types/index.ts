@@ -2,7 +2,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'citizen' | 'admin' | 'collector';
+  role: 'citizen' | 'admin' | 'collector' | 'driver' | 'municipality';
   avatar?: string;
   rewardPoints: number;
   address?: string;
@@ -119,3 +119,159 @@ export interface ApiResponse<T> {
     pages: number;
   };
 }
+
+// ─── Smart Bin Types ─────────────────────────────────────────
+
+export interface SmartBin {
+  _id: string;
+  binId: string;
+  name: string;
+  location: {
+    type: string;
+    coordinates: [number, number]; // [lng, lat]
+    address: string;
+    zone: string;
+  };
+  binType: 'general' | 'recyclable' | 'organic' | 'hazardous' | 'ewaste';
+  capacity: number;
+  currentFillLevel: number;
+  fillStatus: 'green' | 'yellow' | 'red';
+  status: 'active' | 'inactive' | 'maintenance' | 'full' | 'offline';
+  sensorStatus: 'online' | 'offline' | 'low_battery' | 'error';
+  batteryLevel: number;
+  lastEmptied: string;
+  lastSensorPing: string;
+  avgFillRate: number;
+  predictedFullTime?: string;
+  assignedCollector?: User;
+  installDate: string;
+  manufacturer: string;
+  model: string;
+  metadata: {
+    temperature: number;
+    humidity: number;
+    odorLevel: number;
+    weight: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SensorReading {
+  _id: string;
+  bin: string;
+  binId: string;
+  fillLevel: number;
+  temperature: number;
+  humidity: number;
+  weight: number;
+  batteryLevel: number;
+  odorLevel: number;
+  sensorStatus: string;
+  timestamp: string;
+}
+
+export interface CollectionRouteData {
+  _id: string;
+  routeId: string;
+  name: string;
+  driver?: User;
+  vehicle: string;
+  stops: {
+    bin: SmartBin;
+    order: number;
+    estimatedArrival: string;
+    actualArrival?: string;
+    completed: boolean;
+    fillLevelAtCollection?: number;
+  }[];
+  status: 'planned' | 'in_progress' | 'completed' | 'cancelled';
+  scheduledDate: string;
+  startTime?: string;
+  endTime?: string;
+  totalDistance: number;
+  estimatedDuration: number;
+  actualDuration: number;
+  fuelEstimate: number;
+  efficiency: number;
+  optimized: boolean;
+  zone: string;
+}
+
+export interface BinAlert {
+  _id: string;
+  bin: SmartBin;
+  type: 'overflow' | 'predicted_overflow' | 'sensor_offline' | 'low_battery' | 'maintenance_due' | 'temperature_high' | 'collection_missed';
+  severity: 'info' | 'warning' | 'critical';
+  message: string;
+  acknowledged: boolean;
+  resolved: boolean;
+  createdAt: string;
+}
+
+export interface OverflowPrediction {
+  binId: string;
+  binName: string;
+  currentFillLevel: number;
+  fillRate: number;
+  predictedOverflowTime: string | null;
+  hoursToOverflow: number | null;
+  confidence: number;
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  recommendation: string;
+  dataPoints: number;
+}
+
+export interface SmartBinAnalytics {
+  overview: {
+    totalBins: number;
+    activeBins: number;
+    avgFillLevel: number;
+    totalWasteCollected: number;
+    totalCollections: number;
+    overflowIncidents: number;
+    routeEfficiency: number;
+    fuelSaved: number;
+  };
+  heatmapData: {
+    lat: number;
+    lng: number;
+    intensity: number;
+    binId: string;
+    fillLevel: number;
+  }[];
+  dailyTrends: {
+    date: string;
+    collections: number;
+    wasteCollected: number;
+    overflows: number;
+  }[];
+  zoneDistribution: {
+    zone: string;
+    bins: number;
+    avgFillLevel: number;
+    criticalBins: number;
+  }[];
+  recommendations: {
+    type: string;
+    priority: string;
+    title: string;
+    description: string;
+    icon: string;
+  }[];
+}
+
+export interface MaintenanceLogData {
+  _id: string;
+  bin: SmartBin;
+  type: string;
+  description: string;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  assignedTo?: User;
+  scheduledDate: string;
+  completedDate?: string;
+  cost: number;
+  notes: string;
+}
+

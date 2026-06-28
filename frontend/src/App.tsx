@@ -18,6 +18,7 @@ import CustomCursor from './components/ui/CustomCursor';
 import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardOverview from './pages/dashboard/DashboardOverview';
 import { Complaints, Rewards, Notifications, Settings } from './pages/dashboard/DashboardPages';
+import SmartBinDashboard from './pages/dashboard/SmartBinDashboard';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -52,6 +53,7 @@ const AppRoutes: React.FC = () => (
       <Route path="rewards" element={<Rewards />} />
       <Route path="notifications" element={<Notifications />} />
       <Route path="settings" element={<Settings />} />
+      <Route path="smart-bins" element={<SmartBinDashboard />} />
     </Route>
 
     <Route path="*" element={<Navigate to="/" />} />
