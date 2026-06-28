@@ -19,6 +19,7 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardOverview from './pages/dashboard/DashboardOverview';
 import { Complaints, Rewards, Notifications, Settings } from './pages/dashboard/DashboardPages';
 import SmartBinDashboard from './pages/dashboard/SmartBinDashboard';
+import SustainabilityEcosystem from './pages/dashboard/SustainabilityEcosystem';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -54,6 +55,7 @@ const AppRoutes: React.FC = () => (
       <Route path="notifications" element={<Notifications />} />
       <Route path="settings" element={<Settings />} />
       <Route path="smart-bins" element={<SmartBinDashboard />} />
+      <Route path="sustainability" element={<SustainabilityEcosystem />} />
     </Route>
 
     <Route path="*" element={<Navigate to="/" />} />

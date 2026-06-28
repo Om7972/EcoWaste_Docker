@@ -45,6 +45,7 @@ app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/rewards', require('./routes/rewardRoutes'));
 app.use('/api/routes', require('./routes/routeRoutes'));
 app.use('/api/smart-bins', require('./routes/smartBinRoutes'));
+app.use('/api/sustainability', require('./routes/sustainabilityRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

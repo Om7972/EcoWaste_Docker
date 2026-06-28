@@ -275,3 +275,121 @@ export interface MaintenanceLogData {
   notes: string;
 }
 
+export interface Badge {
+  _id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: 'recycling' | 'marketplace' | 'community' | 'carbon' | 'achievement';
+  pointsRequired: number;
+}
+
+export interface Achievement {
+  _id: string;
+  user: string;
+  badge: Badge;
+  earnedAt: string;
+  progress: number;
+  unlocked: boolean;
+}
+
+export interface CarbonReportData {
+  _id: string;
+  user: string;
+  totalCarbonSaved: number;
+  recycledWeights: {
+    plastic: number;
+    paper: number;
+    glass: number;
+    metal: number;
+    organic: number;
+    ewaste: number;
+  };
+  aiSuggestions: string[];
+  monthlyImpactScore: number;
+  lastCalculated: string;
+}
+
+export interface MarketplaceListingData {
+  _id: string;
+  seller: {
+    _id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    rewardPoints: number;
+  };
+  title: string;
+  description: string;
+  materialType: 'plastic' | 'paper' | 'glass' | 'metal' | 'ewaste' | 'organic' | 'textile' | 'other';
+  weight: number;
+  price: number;
+  images: string[];
+  location: {
+    type: string;
+    coordinates: [number, number];
+    address: string;
+  };
+  status: 'active' | 'sold' | 'pending_pickup' | 'cancelled';
+  bids: {
+    buyer: string;
+    amount: number;
+    timestamp: string;
+  }[];
+  highestBid: number;
+  highestBidder?: string;
+  pickupSchedule?: string;
+  moderated: boolean;
+  moderationNotes?: string;
+  createdAt: string;
+}
+
+export interface CommunityPostData {
+  _id: string;
+  author: {
+    _id: string;
+    name: string;
+    avatar?: string;
+  };
+  title: string;
+  content: string;
+  images: string[];
+  tags: string[];
+  likes: string[];
+  comments: {
+    author: {
+      _id: string;
+      name: string;
+      avatar?: string;
+    };
+    content: string;
+    createdAt: string;
+  }[];
+  category: 'recycling_tips' | 'general_discussion' | 'questions' | 'impact';
+  createdAt: string;
+}
+
+export interface CommunityEventData {
+  _id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: {
+    type: string;
+    coordinates: [number, number];
+    address: string;
+  };
+  organizer: {
+    _id: string;
+    name: string;
+  };
+  volunteers: {
+    _id: string;
+    name: string;
+    avatar?: string;
+  }[];
+  maxVolunteers: number;
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+}
+
+
